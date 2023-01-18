@@ -1,0 +1,18 @@
+alias: "Automation 9_ Increase fan speed"
+description: "In case the increase fan speed button is pressed, then increase the AC fan speed. (in our case we increase the brightness of the led strip, so the fast_switch button is pressed)"
+trigger:
+  - platform: state
+    entity_id:
+      - input_button.increase_fan_speed
+condition: []
+action:
+  - service: button.press
+    data: {}
+    target:
+      entity_id:
+        - button.fast_switch
+        - button.fast_switch
+        - button.fast_switch
+        - button.fast_switch
+        - button.fast_switch
+mode: single

@@ -1,0 +1,37 @@
+alias: "Automation 6_ Reset  Sounds and Motions Number (and Turn AC Off)"
+description: "Checks periodically if the room is empty by checking the Sounds Number and the Motions Number variables, if yes turns OFF the AC, else resets the variables values"
+trigger:
+  - platform: time_pattern
+    seconds: /10
+condition: []
+action:
+  - if:
+      - condition: numeric_state
+        entity_id: input_number.motions_number
+        above: "-1"
+        below: "6"
+      - condition: numeric_state
+        entity_id: input_number.sounds_number
+        above: "-1"
+        below: "6"
+    then:
+      - service: button.press
+        data: {}
+        target:
+          entity_id: button.off1
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.ac_on_off_helper
+    else: []
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.motions_number
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.sounds_number
+mode: single

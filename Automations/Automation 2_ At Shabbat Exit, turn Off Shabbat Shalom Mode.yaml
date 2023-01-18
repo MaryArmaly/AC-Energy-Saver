@@ -1,0 +1,29 @@
+alias: Automation 2_ At Shabbat Exit, turn Off Shabbat Shalom Mode
+description: >-
+  At Shabbat Exit, turn Off Shabbat Shalom Mode and Enable some automations(3x
+  Automaion_6 so that the AC will not turn off in case there is no motion or
+  sound)
+trigger:
+  - platform: time
+    at: input_datetime.shabbat_exit
+condition: []
+action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: automation.turn_on
+    data: {}
+    target:
+      entity_id:
+        - >-
+          automation.automation_6_increment_motions_number_when_sensor_is_turned_on
+        - >-
+          automation.automation_6_increment_sounds_number_when_sensor_is_turned_on
+        - automation.automation_2
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.shabbat_shalom
+mode: single

@@ -1,0 +1,15 @@
+alias: "Automation 6_ increment Motions Number when sensor is turned on"
+description: "When the PIR sensor detects motion, increment the Motions Number variable value"
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.pir_sensor
+    from: "off"
+    to: "on"
+condition: []
+action:
+  - service: input_number.increment
+    data: {}
+    target:
+      entity_id: input_number.motions_number
+mode: single

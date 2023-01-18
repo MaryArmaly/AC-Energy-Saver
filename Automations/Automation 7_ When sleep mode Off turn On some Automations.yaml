@@ -1,0 +1,30 @@
+alias: Automation 7_ When sleep mode Off turn On some Automations
+description: >-
+  When turning OFF the sleep mode, enable the automations which were enabled
+  when turning ON the sleep mode, unless shabat shalom is turned ON
+trigger:
+  - platform: state
+    entity_id:
+      - input_boolean.sleep_mode
+    from: "on"
+    to: "off"
+condition:
+  - condition: state
+    entity_id: input_boolean.shabbat_shalom
+    state: "off"
+action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: automation.turn_on
+    data: {}
+    target:
+      entity_id:
+        - >-
+          automation.automation_6_increment_motions_number_when_sensor_is_turned_on
+        - >-
+          automation.automation_6_increment_sounds_number_when_sensor_is_turned_on
+        - automation.automation_2
+mode: single

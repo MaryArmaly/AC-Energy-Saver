@@ -1,0 +1,14 @@
+alias: Automation 7_ At chosen time turn off sleep mode
+description: >-
+  Turn OFF the AC at the time chosen by the user, therefore in case the user
+  forgot to turn it OFF, it will be turned OFF automatically
+trigger:
+  - platform: time
+    at: input_datetime.check_sleep_mode_is_off
+condition: []
+action:
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.sleep_mode
+mode: single

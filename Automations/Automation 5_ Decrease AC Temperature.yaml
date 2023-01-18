@@ -1,0 +1,96 @@
+alias: Automation 5_ Decrease AC Temperature
+description: If the minus(-) button is pressed, then decrease the AC temperature by one. (in our case, we change the led strip color)
+trigger:
+  - platform: state
+    entity_id:
+      - input_button.minus
+condition:
+  - condition: state
+    entity_id: input_boolean.ac_on_off_helper
+    state: "on"
+action:
+  - service: input_number.decrement
+    data: {}
+    target:
+      entity_id: input_number.ac_temperature
+  - if:
+      - condition: state
+        entity_id: input_boolean.heat
+        state: "on"
+    then:
+      - if:
+          - condition: numeric_state
+            entity_id: input_number.ac_temperature
+            above: 17
+            below: 21
+        then:
+          - service: button.press
+            data: {}
+            target:
+              entity_id: button.yellow5
+        else:
+          - if:
+              - condition: numeric_state
+                entity_id: input_number.ac_temperature
+                above: 20
+                below: 24
+            then:
+              - service: button.press
+                data: {}
+                target:
+                  entity_id: button.orange3
+            else:
+              - if:
+                  - condition: numeric_state
+                    entity_id: input_number.ac_temperature
+                    above: 23
+                    below: 27
+                then:
+                  - service: button.press
+                    data: {}
+                    target:
+                      entity_id: button.orange2
+                else:
+                  - service: button.press
+                    data: {}
+                    target:
+                      entity_id: button.red1
+    else:
+      - if:
+          - condition: numeric_state
+            entity_id: input_number.ac_temperature
+            above: 17
+            below: 21
+        then:
+          - service: button.press
+            data: {}
+            target:
+              entity_id: button.blue1
+        else:
+          - if:
+              - condition: numeric_state
+                entity_id: input_number.ac_temperature
+                above: 20
+                below: 24
+            then:
+              - service: button.press
+                data: {}
+                target:
+                  entity_id: button.blue5
+            else:
+              - if:
+                  - condition: numeric_state
+                    entity_id: input_number.ac_temperature
+                    above: 23
+                    below: 27
+                then:
+                  - service: button.press
+                    data: {}
+                    target:
+                      entity_id: button.blue3
+                else:
+                  - service: button.press
+                    data: {}
+                    target:
+                      entity_id: button.white1
+mode: single

@@ -1,0 +1,26 @@
+alias: Automation 8_ wifi phone detecting
+description: >-
+  If the all the phones' wifi which exists in the trigger is turned off, then
+  turn the AC off.
+trigger:
+  - platform: state
+    entity_id:
+      - device_tracker.loai_phone
+      - device_tracker.mary_phone
+    from: home
+    to: not_home
+condition:
+  - condition: and
+    conditions:
+      - condition: state
+        entity_id: device_tracker.mary_phone
+        state: not_home
+      - condition: state
+        entity_id: device_tracker.loai_phone
+        state: not_home
+action:
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.off1
+mode: single

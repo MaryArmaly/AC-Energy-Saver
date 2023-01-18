@@ -1,0 +1,26 @@
+alias: "Automation 3_ Turn Off Heat Mode"
+description: >-
+  If heat mode is turned off, then turn on cool mode, and set the temperature to
+  24 °C.
+trigger:
+  - platform: state
+    entity_id:
+      - input_boolean.heat
+    from: "on"
+    to: "off"
+condition: []
+action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.cool
+  - service: input_number.set_value
+    data:
+      value: 24
+    target:
+      entity_id: input_number.ac_temperature
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.blue3
+mode: single

@@ -1,0 +1,15 @@
+alias: Automation 10_ AC turned On then turn AC_helper On
+description: >-
+  If the on button is pressed (the AC is turned on), then turn the boolean
+  helper (AC_helper) on.
+trigger:
+  - platform: state
+    entity_id:
+      - button.on1
+condition: []
+action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.ac_on_off_helper
+mode: single

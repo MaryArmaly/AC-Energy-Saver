@@ -1,0 +1,20 @@
+alias: Automation 9_ Decrease fan speed
+description: >-
+  In case the decrease fan speed button is pressed, then decrease the AC fan. (in our case we decrease the brightness of the led strip, so the slow_switch button is pressed)
+  speed.
+trigger:
+  - platform: state
+    entity_id:
+      - input_button.decrease_fan_speed
+condition: []
+action:
+  - service: button.press
+    data: {}
+    target:
+      entity_id:
+        - button.slow_switch
+        - button.slow_switch
+        - button.slow_switch
+        - button.slow_switch
+        - button.slow_switch
+mode: single

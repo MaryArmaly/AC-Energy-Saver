@@ -1,0 +1,28 @@
+alias: "Automation 7_ If sleep mode ON then Disable some Automations"
+description: When turning ON the sleep mode, disable some Automations (Automations number 6 and automation 2 to prevent turning OFF the AC automatically in case there is no motion and sound), and reset the motions number and the sounds number variables.
+trigger:
+  - platform: state
+    entity_id:
+      - input_boolean.sleep_mode
+    from: "off"
+    to: "on"
+condition: []
+action:
+  - service: automation.turn_off
+    data:
+      stop_actions: true
+    target:
+      entity_id:
+        - >-
+          automation.automation_6_increment_motions_number_when_sensor_is_turned_on
+        - >-
+          automation.automation_6_increment_sounds_number_when_sensor_is_turned_on
+        - automation.automation_2
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id:
+        - input_number.motions_number
+        - input_number.sounds_number
+mode: single

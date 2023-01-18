@@ -1,0 +1,45 @@
+alias: "Automation 4_ Itag button on + off"
+description: If the ITAG button is pressed, then turn on_off the AC.
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.black_itag_button
+    from: "off"
+    to: "on"
+condition: []
+action:
+  - if:
+      - condition: numeric_state
+        entity_id: input_number.itag_button_counter
+        above: 0
+        below: 2
+    then:
+      - service: button.press
+        data: {}
+        target:
+          entity_id:
+            - button.on1
+            - button.ac_on
+    else:
+      - if:
+          - condition: numeric_state
+            entity_id: input_number.itag_button_counter
+            above: 1
+            below: 3
+        then:
+          - service: button.press
+            data: {}
+            target:
+              entity_id:
+                - button.off1
+                - button.ac_off
+          - service: input_number.set_value
+            data:
+              value: 0
+            target:
+              entity_id: input_number.itag_button_counter
+  - service: input_number.increment
+    data: {}
+    target:
+      entity_id: input_number.itag_button_counter
+mode: single

@@ -1,0 +1,15 @@
+alias: "Automation 6_ increment Sounds Number when sensor is turned on"
+description: "When the high sensitivity sound microphone sensor detects sound, increment the Sounds Number variable value"
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.sound_level
+    from: "off"
+    to: "on"
+condition: []
+action:
+  - service: input_number.increment
+    data: {}
+    target:
+      entity_id: input_number.sounds_number
+mode: single

@@ -1,0 +1,22 @@
+alias: Automation 10_ AC turned Off then turn AC_helper Off
+description: >-
+  If the off button is pressed (the AC is turned off), then turn the boolean
+  helper (AC_helper) off and reset the motion counter and the sound counter.
+trigger:
+  - platform: state
+    entity_id:
+      - button.off1
+condition: []
+action:
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.ac_on_off_helper
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id:
+        - input_number.motions_number
+        - input_number.sounds_number
+mode: single

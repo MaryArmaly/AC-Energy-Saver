@@ -1,0 +1,29 @@
+alias: >-
+  Automation 2_ At Shabat Entrance, if shabbat shalom mode is On then turn On AC
+  and disable some automations
+description: >-
+  At Shabat Shalom Entrance, if shabbat shalom mode is On then turn On the AC
+  and disable some automations (3x Automaion_6 so that the AC will not turn off
+  in case there is no motion or sound)
+trigger:
+  - platform: time
+    at: input_datetime.shabbat_entrance
+condition:
+  - condition: state
+    entity_id: input_boolean.shabbat_shalom
+    state: "on"
+action:
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.on1
+  - service: automation.turn_off
+    data: {}
+    target:
+      entity_id:
+        - >-
+          automation.automation_6_increment_motions_number_when_sensor_is_turned_on
+        - >-
+          automation.automation_6_increment_sounds_number_when_sensor_is_turned_on
+        - automation.automation_2
+mode: single
