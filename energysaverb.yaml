@@ -1,0 +1,314 @@
+# Track bluetooth low energy devices using your ESP32 node.
+esp32_ble_tracker:
+
+# Define the level of logging activities in Home Assistant.
+logger: 
+   level: VERY_VERBOSE
+
+# Enables connections to Bluetooth Low Energy devices in order to query and control them.
+ble_client:
+  # Replace with the MAC address of your device.
+  - mac_address: ff:ff:a0:22:0a:48
+    id: itag_black
+
+# Return one of two mutually exclusive values 
+binary_sensor:
+
+  # PIR sensor allows you to sense motion. Used to detect whether a human has moved in or out of the sensors range.
+  - platform: gpio
+    pin: 21
+    name: "PIR Sensor"
+    device_class: motion
+
+  # High sensitivity sound microphone sensor allows you to detect sound. 
+  - platform: gpio
+    pin: 26
+    name: "sound level"
+    filters:
+    - delayed_off: 500ms
+
+  # Ble_ITAG_Button
+  - platform: template
+    id: black_button
+    name: "Black iTag Button"
+    filters:
+      delayed_off: 200ms
+
+# Sensors monitor the states and conditions of a variety of entities.
+sensor:
+
+  # Temperature sensor detects and measures hotness and coolness and converts it into an electrical signal.
+  - platform: dht
+    pin: 19
+    temperature:
+      name: "Living Room Temp"
+    humidity:
+      name: "Living Romm Hum"
+    update_interval: 60s
+    model: DHT11
+    
+# ITAG button:
+# This entry registers and awaits notifications for the
+# characteristic that signals button presses. Each time
+# a notification is received, the corresponding binary_sensor
+# is briefly toggled.
+  - platform: ble_client
+    ble_client_id: itag_black
+    name: "Black iTag btn"
+    service_uuid: 'ffe0'
+    characteristic_uuid: 'ffe1'
+    notify: true
+    update_interval: never
+    on_notify:
+      then:
+        - binary_sensor.template.publish:
+            id: black_button
+            state: ON
+        - binary_sensor.template.publish:
+            id: black_button
+            state: OFF
+
+# ITAG button:   
+# This entry queries the battery level. Some tags may not
+# support this characteristic, you will see 'Unknown' in the
+# HA frontend.
+  - platform: ble_client
+    ble_client_id: itag_black
+    name: "Black iTag Battery"
+    service_uuid: '180f'
+    characteristic_uuid: '2a19'
+    icon: 'mdi:battery'
+    unit_of_measurement: '%'
+    
+# Infrared Receiver  
+remote_receiver:
+  pin:
+    number: GPIO15
+    inverted: true
+  dump: all
+  
+# Infrared Transmitter
+remote_transmitter:
+  pin:
+   number: GPIO16
+  carrier_duty_percent: 50%
+  
+# Buttons
+button:
+
+# These buttons contain the decoding of the led strip-IR remote buttons.
+  - platform: template
+    name: "ON1"
+    icon: "mdi:play"
+    id: on_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x000D
+      - remote_transmitter.transmit_nec:
+          address: 0x0400
+          command: 0x0800
+
+  - platform: template
+    name: "ON2"
+    icon: "mdi:play"
+    id: on_button2
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x000D
+      - remote_transmitter.transmit_nec:
+          address: 0x0400
+          command: 0x0800    
+  
+  - platform: template
+    name: "Off1"
+    icon: "mdi:pause-box-outline"
+    id: off_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x001F
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xE01F
+
+  - platform: template
+    name: "Off2"
+    icon: "mdi:pause-box-outline"
+    id: off_button2
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x001F
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xE01F
+  
+  - platform: template
+    name: "Fast_switch"
+    icon: "mdi:pause-box-outline"
+    id: fast_switch_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x0009
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xF609  
+          
+  - platform: template
+    name: "Slow_switch"
+    icon: "mdi:pause-box-outline"
+    id: slow_switch_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x001D
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xE21D              
+
+  - platform: template
+    name: "Red1"
+    icon: "mdi:pause-box-outline"
+    id: red1_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x0019
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xE619
+               
+  - platform: template
+    name: "Blue1"
+    icon: "mdi:pause-box-outline"
+    id: blue1_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x0011
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xEE11    
+          
+  - platform: template
+    name: "White1"
+    icon: "mdi:pause-box-outline"
+    id: white1_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x0015
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xEA15 
+          
+  - platform: template
+    name: "Orange2"
+    icon: "mdi:pause-box-outline"
+    id: orange2_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x0017
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xE817
+                      
+  - platform: template
+    name: "Orange3"
+    icon: "mdi:pause-box-outline"
+    id: orange3_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x0040
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xBF40 
+                   
+  - platform: template
+    name: "Blue3"
+    icon: "mdi:pause-box-outline"
+    id: blue3_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x004C
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xB34C 
+                       
+  - platform: template
+    name: "Yellow5"
+    icon: "mdi:pause-box-outline"
+    id: yellow5_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x001C
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xE31C        
+          
+  - platform: template
+    name: "Blue5"
+    icon: "mdi:pause-box-outline"
+    id: blue5_button
+    on_press:
+      - remote_transmitter.transmit_pioneer:
+          rc_code_1: 0x0014
+      - remote_transmitter.transmit_nec:
+          address: 0xFF00
+          command: 0xEB14   
+ 
+
+# These buttons contain the decoding of the AC IR remote buttons.
+  - platform: template
+    name: "AC_ON"
+    icon: "mdi:play"
+    id: AC_on_button
+    on_press:
+      - remote_transmitter.transmit_coolix:
+          data: 0xB29FC0
+      - remote_transmitter.transmit_toshiba_ac:
+          rc_code_1: 0xB24D9F60C03F
+
+  - platform: template
+    name: "AC_OFF"
+    icon: "mdi:play"
+    id: AC_off_button
+    on_press:
+      - remote_transmitter.transmit_coolix:
+          data: 0xB27BE0
+      - remote_transmitter.transmit_toshiba_ac:
+          rc_code_1: 0xB24D7B84E01F
+
+  - platform: template
+    name: "AC_minus"
+    icon: "mdi:play"
+    id: AC_minus_button
+    on_press:
+      - remote_transmitter.transmit_coolix:
+          data: 0xB29F40
+      - remote_transmitter.transmit_toshiba_ac:
+          rc_code_1: 0xB24D9F6040BF
+
+  - platform: template
+    name: "AC_plus"
+    icon: "mdi:play"
+    id: AC_plus_button
+    on_press:
+      - remote_transmitter.transmit_coolix:
+          data: 0xB29FC0
+      - remote_transmitter.transmit_toshiba_ac:
+          rc_code_1: 0xB24D9F60C03F
+
+  - platform: template
+    name: "AC_fan"
+    icon: "mdi:play"
+    id: AC_fan_button
+    on_press:
+      - remote_transmitter.transmit_coolix:
+          data: 0xB25FC0
+      - remote_transmitter.transmit_toshiba_ac:
+          rc_code_1: 0xB24D5FA0C03F
+
+  - platform: template
+    name: "AC_mode"
+    icon: "mdi:play"
+    id: AC_mode_button
+    on_press:
+      - remote_transmitter.transmit_coolix:
+          data: 0xB21FC4
+      - remote_transmitter.transmit_toshiba_ac:
+          rc_code_1: 0xB24D1FE0C43B

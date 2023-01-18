@@ -1,0 +1,86 @@
+title: Home
+views:
+  - path: default_view
+    title: Home
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: gauge
+            entity: input_number.ac_temperature
+            unit: °C
+            min: 18
+            max: 29
+          - type: horizontal-stack
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: button.on1
+                name: 'ON'
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: button.off1
+                name: 'OFF'
+          - type: horizontal-stack
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: input_button.plus
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: input_button.minus
+          - type: horizontal-stack
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: input_button.increase_fan_speed
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: input_button.decrease_fan_speed
+          - type: entities
+            entities:
+              - entity: input_boolean.cool
+              - entity: input_boolean.heat
+      - type: entities
+        entities:
+          - entity: input_boolean.sleep_mode
+          - entity: input_datetime.check_sleep_mode_is_off
+      - type: entities
+        entities:
+          - entity: input_boolean.shabbat_shalom
+          - entity: input_datetime.shabbat_entrance
+          - entity: input_datetime.shabbat_exit
+      - type: entities
+        entities:
+          - entity: input_number.motions_number
+          - entity: input_number.sounds_number
+        title: Helpers
+      - type: entities
+        entities:
+          - input_boolean.ac_on_off_helper
+      - type: entities
+        entities:
+          - entity: binary_sensor.pir_sensor
+          - entity: binary_sensor.sound_level
+          - entity: binary_sensor.black_itag_button
+          - entity: sensor.living_room_temp
+            name: Temp
+          - entity: sensor.black_itag_btn
+        title: Living Room
