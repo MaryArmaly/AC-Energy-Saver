@@ -1,0 +1,48 @@
+alias: "Automation 1_ Cyclic Automatic AC On_Off Check"
+description: >-
+  Works as AC thermostat, such that it compares between the room temperature and
+  the AC temperature, in order to perform actions (turn ON/OFF the AC), so the
+  room temperature is maintained near the AC temperature.
+trigger:
+  - platform: time_pattern
+    seconds: /10
+condition:
+  - condition: state
+    entity_id: input_boolean.ac_on_off_helper
+    state: "on"
+action:
+  - if:
+      - condition: state
+        entity_id: input_boolean.heat
+        state: "on"
+    then:
+      - if:
+          - condition: numeric_state
+            entity_id: input_number.ac_temperature
+            below: sensor.living_room_temp
+        then:
+          - service: button.press
+            data: {}
+            target:
+              entity_id: button.off2
+        else:
+          - service: button.press
+            data: {}
+            target:
+              entity_id: button.on2
+    else:
+      - if:
+          - condition: numeric_state
+            entity_id: input_number.ac_temperature
+            above: sensor.living_room_temp
+        then:
+          - service: button.press
+            data: {}
+            target:
+              entity_id: button.off2
+        else:
+          - service: button.press
+            data: {}
+            target:
+              entity_id: button.on2
+mode: single
